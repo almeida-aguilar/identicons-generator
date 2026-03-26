@@ -1,9 +1,11 @@
 # Identicons Generator
 
 ## Quick Start
-´´´sh
+
+```sh
 ./program -r filename
-´´´
+```
+```
 
 ### Examples
 ![blue](blue.jpg)

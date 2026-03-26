@@ -7,6 +7,8 @@
 #include <time.h>
 
 #define MAX_VIRTUAL_PIXELS 15
+#define BUFFER 256
+
 const Vector2 origin = {35, 35};
 const Vector2 sides = {70, 70};
 
@@ -26,10 +28,10 @@ identicon_s new_identicon() {
 }
 
 void print_help() {
-    printf("-h:        see the command istructions\n");
-    printf("-r:        to make a random image identicon\n");
-    printf(
-        "-s <seed>: to make a random image identicon with a specific seed\n");
+    printf("-h:                    see the command istructions\n");
+    printf("-r <file name>:        to make a random image identicon\n");
+    printf("-s <seed> <file name>: to make a random image identicon with a "
+           "specific seed\n");
 }
 
 void debug_print(const identicon_s* identicon, const time_t* seed) {
@@ -44,23 +46,35 @@ void debug_print(const identicon_s* identicon, const time_t* seed) {
     }
 }
 
+void try_set_name(char* name, char* string) {
+    if (strlen(string) >= BUFFER) {
+        printf("file name is too long!\n");
+    } else {
+        strcpy(name, string);
+    }
+}
+
 int main(int argc, char* argv[]) {
 
     time_t seed = -1;
-
+    char file_name[BUFFER];
     switch (argc) {
         case 2:
             if (strcmp(argv[1], "-h") == 0) {
                 print_help();
                 return 0;
-            } else if (strcmp(argv[1], "-r") != 0) {
-                return 0;
+            }
+        case 4:
+            if (strcmp(argv[1], "-s") == 0) {
+                seed = atoi(argv[2]);
+                try_set_name(file_name, argv[3]);
             }
             break;
         case 3:
-            if (strcmp(argv[1], "-s") == 0) {
-                seed = atoi(argv[2]);
+            if (strcmp(argv[1], "-r") != 0) {
+                return 0;
             }
+            try_set_name(file_name, argv[2]);
             break;
         default:
             print_help();
@@ -108,7 +122,7 @@ int main(int argc, char* argv[]) {
             }
         }
     }
-    ExportImage(image, "profile.jpg");
+    ExportImage(image, strcat(file_name, ".jpg"));
 
     return 0;
 }
